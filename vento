@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 17 14:22:37 2025
+
+@author: ladsin
+"""
+#importando bibliotecas
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+import metpy.calc as mpcalc
+from metpy.units import units
+import numpy as np
+import xarray as xr
+import cartopy.io.shapereader as shpreader # Import shapefiles
+from datetime import datetime, timedelta  # basicas datas e tipos de tempo
+import cmocean
+import os  # Importando módulo os para manipulação de diretórios
+
+#dataset
+file_1 = xr.open_dataset('/home/ladsin/Chalo/.nc/isaatmosfera.nc').metpy.parse_cf()
+file_1 = file_1.assign_coords(dict(
+    longitude = (((file_1.longitude.values + 180) % 360) - 180))
+    ).sortby('longitude')
+
+#extent
+lon_slice = slice(-100, -10)
+lat_slice = slice(10, -60)
+
+#pega as lat/lon
+lats = file_1.latitude.sel(latitude=lat_slice).values
+lons = file_1.longitude.sel(longitude=lon_slice).values
+
+# Define o diretório onde as figuras serão salvas
+output_dir = '/home/ladsin/Chalo/IMAGENS/isa'
+# Cria o diretório se ele não existir
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+for i in range(len(file_1.variables['valid_time'])):
+    
+    
+    u = file_1['u10'].metpy.sel(
+        time = file_1.valid_time[i], 
+        #vertical=level, 
+        latitude=lat_slice, 
+        longitude=lon_slice
+        ).metpy.unit_array.squeeze()
+    
+    v = file_1['v10'].metpy.sel(
+        time = file_1.valid_time[i], 
+        #vertical=level, 
+        latitude=lat_slice, 
+        longitude=lon_slice
+        ).metpy.unit_array.squeeze()
+    
+    mag = np.sqrt(u*2+v*2)
+
+    #data
+    vtime1 = file_1.valid_time.data[i].astype('datetime64[ms]').astype('O')
+    formatted_time = vtime1.strftime('%d-%m-%Y %H:%MUTC')
+
+
+    # escolha o tamanho do plot em polegadas (largura x altura)
+    fig = plt.figure(figsize=(20,15), dpi = 300)
+    
+    # usando a projeção da coordenada cilindrica equidistante 
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    gl = ax.gridlines(crs=ccrs.PlateCarree(),
+                      color='gray',
+                      alpha=1.0, 
+                      linestyle='--', 
+                      linewidth=0.5,
+                      xlocs=np.arange(-180, 180, 5), 
+                      ylocs=np.arange(-90, 90, 5), 
+                      draw_labels=False
+                      )
+    gl.top_labels = False
+    gl.right_labels = False
+    #gl.xlabel_style = {'size': 29, 'color': 'black'}
+    #gl.ylabel_style = {'size': 29, 'color': 'black'}
+    
+    # intevalos da rajada
+    intervalo_min3 = 28
+    intervalo_max3 = 64
+    interval_3 = 6            # de quanto em quanto voce quer que varie
+    levels_3 = np.arange(intervalo_min3, intervalo_max3, interval_3)
+    
+    # Rajada
+    img = plt.contourf(lons,
+                       lats, 
+                       mag, 
+                       cmap='hot_r', 
+                       levels = levels_3, 
+                       extend='both')
+    
+    img2 = ax.contour(lons, 
+                      lats, 
+                      mag, 
+                      colors='white', 
+                      linewidths=0.8, 
+                      levels=levels_3, 
+                      transform=ccrs.PlateCarree())
+   
+    
+    # plot barbela
+    #img = plt.contour(lons,lats,mag, vmin=vmin, vmax=vmax, levels = levels, extend='both')
+    plt.barbs(
+        lons[::7],# intervalo do plot de barbelas
+        lats[::7],
+        u[::7,::7],
+        v[::7,::7],
+        fill_empty=True,
+        length=7,
+        sizes=dict(emptybarb=0.1, height=0.8),
+        barbcolor="black",
+        barb_increments=dict(flag=50),
+        transform=ccrs.PlateCarree())
+    
+    #adicionando shapefile
+    shapefile = list(
+        shpreader.Reader(
+        '/home/ladsin/BR_UF_2019.shp'
+        ).geometries()
+        )
+    
+    ax.add_geometries(
+        shapefile, 
+        ccrs.PlateCarree(), 
+        edgecolor = 'black', 
+        facecolor='none', 
+        linewidth=1.5
+        )
+    
+    # adiciona continente e bordas
+    ax.add_feature(cfeature.LAND)
+    ax.coastlines(resolution='10m', color='black', linewidth=1.5)
+    ax.add_feature(cfeature.BORDERS, edgecolor='black', linewidth=1.5)
+    
+    # ax.set_xticks([-55,-50,-45])
+    # ax.set_xticklabels([u'055°W',u'050°W',u'045°W'],fontsize=23)
+    
+    # ax.set_yticks([-25,-30,-35])
+    # ax.set_yticklabels([u'25°S',u'30°S',u'35°S'],fontsize=23)
+    
+    # adiciona legenda 
+    barra_de_cores = plt.colorbar(img, 
+                                  orientation = 'horizontal', 
+                                  pad=0.06, 
+                                  fraction=0.04
+                                  )
+    font_size = 23 # Adjust as appropriate.
+    barra_de_cores.ax.tick_params(labelsize=font_size)
+    
+    # Add a title
+    plt.title('Vento a 10 m [nós] \nPNMM [hPa]',
+              fontweight='bold', 
+              fontsize=23, 
+              loc='left'
+              )
+    #previsao
+    plt.title(formatted_time, fontsize=23, loc='right')
+    #analise
+    #plt.title('Análise: {}'.format(vtime1), fontsize=35, loc='right')
+    
+    vtime1_np = np.datetime64(vtime1)  # Convertendo para numpy.datetime64
+    file_name = f"Vento_{np.datetime_as_string(vtime1_np, unit='s')}.png"
+    
+    plt.savefig(os.path.join(output_dir, file_name), dpi=300, bbox_inches='tight')  # Salvar a figura
+    plt.close()  # Fecha a figura para liberar memória
