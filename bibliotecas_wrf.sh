@@ -9,7 +9,7 @@
 #																		    #
 # O script pode ser utilizado também como passo a passo para instalação manual, bastando o usuário seguir a lógica dos caminhos e dos comandos e    #
 # executando em sua ordem no terminal do linux.                                                                                                     #
-# O script encerra até o download das pastas do WPS (pré-processamento) e do WRF (processamento)                                                    #    
+# O script encerra até o download das pastas com os arquivos do WPS (pré-processamento) e do WRF (processamento)                                                    #    
 # Ricardo Mollmann - criado em 05/2025                                                                                                              # 
 #																		    #
 # Referencial de instalação:                                                                                                                          #
