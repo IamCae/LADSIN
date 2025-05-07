@@ -16,8 +16,8 @@
 # base WRF https://www2.mmm.ucar.edu/wrf/OnLineTutorial/compilation_tutorial.php#STEP1                                                              #
 # base BIBLIOTECAS https://forum.mmm.ucar.edu/threads/full-wrf-and-wps-installation-example-gnu.12385/                                              #
 # download dos dados de contorno: https://www2.mmm.ucar.edu/wrf/src/wps_files/                                                                      #
-# baixa resolução: https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_low_res_mandatory.tar.gz                                                        #
-# alta resolução: wget https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_high_res_mandatory.tar.gz                                                   #
+# comando para baixa resolução: wget https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_low_res_mandatory.tar.gz                                      #
+# comando para alta resolução: wget https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_high_res_mandatory.tar.gz                                      #
 #####################################################################################################################################################
 # 
 set -e
