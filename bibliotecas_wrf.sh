@@ -160,5 +160,6 @@ if [[ $WPS == "SIM" ]]; then
     echo "Clonando WPS"
     git clone https://github.com/wrf-model/WPS.git
     echo "Entre na pasta WPS, defina WRF_DIR corretamente, execute ./configure (opção 1) e ./compile"
+    wget https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_high_res_mandatory.tar.gz
 fi
 
