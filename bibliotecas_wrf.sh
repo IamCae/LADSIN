@@ -1,20 +1,23 @@
 #!/bin/bash
-#																		    #
+#																		                                                                            #
 # Passo a Passo para compilação das bibliotecas e para compilação do modelo WRF com compilador gfortran.                                            #
-#																		    #
+#																		                                                                            #
 # Este script esta preparado para instalar todas as bibliotecas necessárias para compilar o modelo WRF no diretório definido abaixo como DIR.       #
-#																		    #	
+#																		                                                                            #	
 # O script segue as "Variáveis de Controle" para cada etapa de instalação, assim se caso ocorrer algum erro durante o processamento de uma etapa    #
 # basta o usuário alterar a flag "SIM" para "NAO" para o script seguir a partir da última configurada como "SIM".                                   #
-#																		    #
+#																		                                                                            #
 # O script pode ser utilizado também como passo a passo para instalação manual, bastando o usuário seguir a lógica dos caminhos e dos comandos e    #
 # executando em sua ordem no terminal do linux.                                                                                                     #
-# O script encerra até o download das pastas com os arquivos do WPS (pré-processamento) e do WRF (processamento)                                                    #    
+# O script encerra até o download das pastas com os arquivos do WPS (pré-processamento) e do WRF (processamento)                                    #                #    
 # Ricardo Mollmann - criado em 05/2025                                                                                                              # 
-#																		    #
-# Referencial de instalação:                                                                                                                          #
+#																		                                                                            #
+# Referencial de instalação:                                                                                                                        #
 # base WRF https://www2.mmm.ucar.edu/wrf/OnLineTutorial/compilation_tutorial.php#STEP1                                                              #
 # base BIBLIOTECAS https://forum.mmm.ucar.edu/threads/full-wrf-and-wps-installation-example-gnu.12385/                                              #
+# download dos dados de contorno: https://www2.mmm.ucar.edu/wrf/src/wps_files/                                                                      #
+# baixa resolução: https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_low_res_mandatory.tar.gz                                                        #
+# alta resolução: wget https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_high_res_mandatory.tar.gz                                                   #
 #####################################################################################################################################################
 # 
 set -e
@@ -160,6 +163,5 @@ if [[ $WPS == "SIM" ]]; then
     echo "Clonando WPS"
     git clone https://github.com/wrf-model/WPS.git
     echo "Entre na pasta WPS, defina WRF_DIR corretamente, execute ./configure (opção 1) e ./compile"
-    wget https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_high_res_mandatory.tar.gz
-fi
+    fi
 
