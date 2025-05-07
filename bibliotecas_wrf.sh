@@ -12,7 +12,7 @@
 # O script encerra até o download das pastas do WPS (pré-processamento) e do WRF (processamento)                                                    #    
 # Ricardo Mollmann - criado em 05/2025                                                                                                              # 
 #																		    #
-# Rerencial de instalação:                                                                                                                          #
+# Referencial de instalação:                                                                                                                          #
 # base WRF https://www2.mmm.ucar.edu/wrf/OnLineTutorial/compilation_tutorial.php#STEP1                                                              #
 # base BIBLIOTECAS https://forum.mmm.ucar.edu/threads/full-wrf-and-wps-installation-example-gnu.12385/                                              #
 #####################################################################################################################################################
