@@ -30,6 +30,14 @@ mkdir $DIR/grib2
 mkdir $DIR/netcdf
 INSTALL_PREFIX_GRIB2=$DIR/grib2
 INSTALL_PREFIX_NETCDF=$DIR/netcdf
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+export FCFLAGS="-m64 -fallow-argument-mismatch"
+export F77=gfortran
+export FFLAGS="-m64 -fallow-argument-mismatch"
+export LDFLAGS="-L$NETCDF/lib -L$DIR/grib2/lib"
+export CPPFLAGS="-I$NETCDF/include -I$DIR/grib2/include -fcommon"
 
 # Variáveis de controle
 SISTEMA="SIM"
